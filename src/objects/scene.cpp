@@ -19,10 +19,3 @@ void Scene::tick() {
 		sprite_ticker->tick();
 	}
 }
-
-SceneManager::SceneManager() {}
-SceneManager::~SceneManager() {}
-
-void SceneManager::set_scene(Scene* scene) {
-	this->current_scene = scene;
-}

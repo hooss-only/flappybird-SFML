@@ -17,15 +17,4 @@ class Scene {
 		std::vector<SpriteTicker*> sprite_tickers;
 };
 
-class SceneManager {
-	public:
-		SceneManager();
-		virtual ~SceneManager();
-
-		void set_scene(Scene* scene);
-
-	private:
-		Scene *current_scene;
-};
-
 #endif
