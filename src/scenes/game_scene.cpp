@@ -70,7 +70,10 @@ class PipeTicker : public SpriteTicker {
 		}
 };
 
-GameScene::GameScene() {
+GameScene::GameScene(SceneManager* scene_manager_ptr, Scene* game_over_scene_ptr) {
+	this->scene_manager_ptr = scene_manager_ptr;
+
+
 	FlappyBirdTicker* flappy_ticker = new FlappyBirdTicker();
 	this->player = flappy_ticker;
 	this->add_sprite_ticker(flappy_ticker);
@@ -115,7 +118,7 @@ void GameScene::event_handler(sf::Event* event) {
 
 		if (sprite_ticker != this->player && sprite_ticker->visible) {
 			if (player->sprite->getGlobalBounds().intersects(sprite_ticker->sprite->getGlobalBounds())) {
-				std::cout << sprite_ticker << "BOOM!" << std::endl;
+				std::cout << sprite_ticker << " BOOM!" << std::endl;
 			}
 		}
 	}
