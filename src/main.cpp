@@ -2,7 +2,9 @@
 #include <iostream>
 
 #include "objects/scene.hpp"
+#include "objects/event.hpp"
 #include "scenes/game_scene.hpp"
+#include "scenes/game_over_scene.hpp"
 
 #define WIDTH 600
 #define HEIGHT 1000
@@ -16,10 +18,11 @@ int main() {
 	SceneManager scene_manager;
 
 	Scene* game_scene = new GameScene();
+	Scene* game_over_scene = new GameOverScene();
 
 	scene_manager.set_scene(game_scene);
 
-
+	GameEvent::state = "";
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -34,6 +37,11 @@ int main() {
 		}
 		float deltaTime = clock.restart().asSeconds();
 
+		if (GameEvent::state == "player_dead") {
+			scene_manager.change_scene(game_over_scene);
+			GameEvent::state = "game_end";
+		}
+
 		window.clear();
 		scene_manager.event_handler(&event);
 		scene_manager.tick();
@@ -42,6 +50,9 @@ int main() {
 
 		sf::sleep(sf::seconds(fixedTimeStep - deltaTime));
 	}
+
+	delete game_scene;
+	delete game_over_scene;
 
 	std::cout << "Exited game!" << std::endl;
 	return 0;
