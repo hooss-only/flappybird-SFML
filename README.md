@@ -12,7 +12,8 @@ clang과 make가 필요합니다.<br>
 Clang and Make is needed to compile and play.
 
 # TODO
-- [ ] 게임 이벤트 관리
-- [ ] 게임오버 이벤트
+- [X] 게임 이벤트 관리
+- [X] 게임오버 이벤트
 - [ ] 메인 메뉴 제작
 - [ ] 배경
+- [ ] 소리
