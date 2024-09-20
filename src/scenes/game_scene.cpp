@@ -3,7 +3,6 @@
 
 #include "../objects/sprite.hpp"
 #include "../util/texture.hpp"
-
 #include "game_scene.hpp"
 
 const float SPEED = 1.0f;
@@ -72,6 +71,7 @@ class PipeTicker : public SpriteTicker {
 GameScene::GameScene() {
 	FlappyBirdTicker* flappy_ticker = new FlappyBirdTicker();
 	this->player = flappy_ticker;
+	this->player->dead = false;
 	this->add_sprite_ticker(flappy_ticker);
 	this->player_jumping = false;
 
@@ -100,7 +100,7 @@ void GameScene::add_pipe_set(float y) {
 }
 
 void GameScene::event_handler(sf::Event* event) {
-	if (this->clock.getElapsedTime().asSeconds() >= PIPE_INTERVAL) {
+	if (this->clock.getElapsedTime().asSeconds() >= PIPE_INTERVAL && !this->player->dead) {
 		// 400 ~ 800
 		this->add_pipe_set(this->dis(this->gen));
 		clock.restart();
@@ -114,19 +114,23 @@ void GameScene::event_handler(sf::Event* event) {
 
 		if (sprite_ticker != this->player && sprite_ticker->visible) {
 			if (player->sprite->getGlobalBounds().intersects(sprite_ticker->sprite->getGlobalBounds())) {
+				this->player->dead = true;
+				for (SpriteTicker* sprite_ticker: this->sprite_tickers) {
+					if (sprite_ticker != this->player && sprite_ticker->visible) sprite_ticker->ticking = false;
+				}
 			}
 		}
 	}
 
 	if (event->type == sf::Event::KeyPressed) {
-			if (event->key.code == sf::Keyboard::Up && !this->player_jumping) {
+			if (event->key.code == sf::Keyboard::Up && !this->player_jumping && !this->player->dead) {
 				this->player->jump();
 				this->player_jumping = true;
 			}
 	}
 
 	if (event->type == sf::Event::KeyReleased) {
-		if (event->key.code == sf::Keyboard::Up && this->player_jumping) {
+		if (event->key.code == sf::Keyboard::Up && this->player_jumping && !this->player->dead) {
 				this->player_jumping = false;
 			}
 	}

@@ -15,6 +15,8 @@ class FlappyBirdTicker : public SpriteTicker, PhysicalObject {
 		
 		void jump();
 		void tick() override;
+
+		bool dead;
 	
 	private:
 		void change_angle_by_y_velocity();
@@ -23,7 +25,7 @@ class FlappyBirdTicker : public SpriteTicker, PhysicalObject {
 class GameScene : public Scene {
 	public:
 		GameScene();
-		~GameScene();
+		~GameScene() override;
 
 		
 		void event_handler(sf::Event* event) override;
