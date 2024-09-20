@@ -22,7 +22,7 @@ class FlappyBirdTicker : public SpriteTicker, PhysicalObject {
 
 class GameScene : public Scene {
 	public:
-		GameScene(SceneManager* scene_manager_ptr, Scene* game_over_scene_ptr);
+		GameScene();
 		~GameScene();
 
 		
@@ -36,9 +36,6 @@ class GameScene : public Scene {
 		sf::Clock clock;
 		bool player_jumping;
 		FlappyBirdTicker* player;
-
-		SceneManager* scene_manager_ptr;
-		Scene* game_over_scene_ptr;
 };
 
 #endif

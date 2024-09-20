@@ -13,10 +13,13 @@ int main() {
 	sf::Clock clock;
 	const float fixedTimeStep = 1.0f / 60.0f; // 60 FPS
 
-	Scene* game_scene = new GameScene();
-	
 	SceneManager scene_manager;
+
+	Scene* game_scene = new GameScene();
+
 	scene_manager.set_scene(game_scene);
+
+
 
 	while (window.isOpen()) {
 		sf::Event event;
