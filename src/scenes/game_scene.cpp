@@ -118,7 +118,7 @@ void GameScene::event_handler(sf::Event* event) {
 
 		if (sprite_ticker != this->player && sprite_ticker->visible) {
 			if (player->sprite->getGlobalBounds().intersects(sprite_ticker->sprite->getGlobalBounds())) {
-				std::cout << sprite_ticker << " BOOM!" << std::endl;
+				this->scene_manager_ptr->change_scene(this->game_over_scene_ptr);
 			}
 		}
 	}
