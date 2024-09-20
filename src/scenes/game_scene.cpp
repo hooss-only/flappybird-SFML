@@ -2,7 +2,9 @@
 #include <random>
 
 #include "../objects/sprite.hpp"
+#include "../objects/event.hpp"
 #include "../util/texture.hpp"
+
 #include "game_scene.hpp"
 
 const float SPEED = 1.0f;
@@ -118,9 +120,13 @@ void GameScene::event_handler(sf::Event* event) {
 				for (SpriteTicker* sprite_ticker: this->sprite_tickers) {
 					if (sprite_ticker != this->player && sprite_ticker->visible) sprite_ticker->ticking = false;
 				}
+				this->clock.restart();
 			}
 		}
 	}
+
+	if (this->player->dead && this->clock.getElapsedTime().asSeconds() >= 3.0f) 
+		GameEvent::state = "player_dead";
 
 	if (event->type == sf::Event::KeyPressed) {
 			if (event->key.code == sf::Keyboard::Up && !this->player_jumping && !this->player->dead) {

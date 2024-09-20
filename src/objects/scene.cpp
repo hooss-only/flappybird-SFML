@@ -64,6 +64,6 @@ void SceneManager::event_handler(sf::Event* event) {
 
 void SceneManager::end_game() {
 	if (this->current_scene != nullptr)
-		delete this->current_scene;
-	this->current_scene = nullptr;
+		current_scene->drop();
+	current_scene = nullptr;
 }
