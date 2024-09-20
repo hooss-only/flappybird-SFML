@@ -31,7 +31,7 @@ std::string get_executable_path() {
 	}
 
 #elif __linux__
-	size_t count = readlink("/proc/self/exe", result, sizeof(result));
+	ssize_t count = readlink("/proc/self/exe", result, sizeof(result));
 	if (count == -1) {
 		std::cerr << "Error reading symbolic link" << std::endl;
 		return "";

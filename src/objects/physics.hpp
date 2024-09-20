@@ -11,6 +11,7 @@ class PhysicalObject {
 		void apply_velocity(sf::Sprite* sprite);
 		void gravity_calculation();
 		void set_gravity(float gravity);
+		void set_velocity(float x, float y);
 		sf::Vector2f get_velocity();
 
 	private:
