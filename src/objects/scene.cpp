@@ -47,7 +47,7 @@ void SceneManager::set_scene(Scene* scene) {
 }
 
 void SceneManager::change_scene(Scene* scene) {
-	delete this->current_scene;
+	current_scene->drop();
 	this->current_scene = scene;
 }
 
