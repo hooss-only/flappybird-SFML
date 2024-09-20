@@ -3,11 +3,7 @@
 #include "scene.hpp"
 
 Scene::Scene() {}
-Scene::~Scene() {
-	std::cout << "dropping scene" << std::endl;
-	this->drop();
-	std::cout << "dropped scene" << std::endl;
-}
+Scene::~Scene() {}
 
 void Scene::add_sprite_ticker(SpriteTicker* sprite_ticker) {
 	this->sprite_tickers.push_back(sprite_ticker);

@@ -13,9 +13,9 @@ class Scene {
 		void tick();
 		void render(sf::RenderWindow* window);
 		virtual void event_handler(sf::Event* event);
-	
-	private:
+
 		void drop();
+	
 	
 	protected:
 		std::vector<SpriteTicker*> sprite_tickers;
