@@ -19,6 +19,7 @@ class GameOverScene : public Scene {
 		~GameOverScene() override;
 
 		void event_handler(sf::Event* event) override;
+		void init() override;
 };
 
 #endif
