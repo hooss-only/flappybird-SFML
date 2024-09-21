@@ -35,8 +35,6 @@ class GameScene : public Scene {
 		~GameScene() override;
 		
 		void event_handler(sf::Event* event) override;
-
-		static unsigned int score;
 	
 	private:
 		void add_ray(float x);

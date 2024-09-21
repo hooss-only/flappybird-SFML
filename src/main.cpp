@@ -21,7 +21,7 @@ int main() {
 
 	scene_manager.set_scene(game_scene);
 
-	GameEvent::state = "";
+	state = "";
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -36,10 +36,10 @@ int main() {
 		}
 		float deltaTime = clock.restart().asSeconds();
 
-		if (GameEvent::state == "player_dead") {
+		if (state == "player_dead") {
 			scene_manager.change_scene(game_over_scene);
 			std::cout << "player_dead" << std::endl;
-			GameEvent::state = "game_end";
+			state = "game_end";
 		}
 
 		window.clear();

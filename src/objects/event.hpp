@@ -3,9 +3,7 @@
 
 #include <string>
 
-class GameEvent {
-	public:
-		static std::string state;
-};
+extern std::string state;
+extern unsigned int score;
 
 #endif

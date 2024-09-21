@@ -1,3 +1,4 @@
-#include "event.hpp"
+#include <string>
 
-std::string GameEvent::state = "";
+std::string state = "";
+unsigned int score = 0;

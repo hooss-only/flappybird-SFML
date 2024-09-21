@@ -96,7 +96,7 @@ class PipeTicker : public SpriteTicker {
 };
 
 GameScene::GameScene() {
-	this->score = 0;
+	score = 0;
 
 	FlappyBirdTicker* flappy_ticker = new FlappyBirdTicker();
 	this->player = flappy_ticker;
@@ -127,8 +127,6 @@ GameScene::~GameScene() {
 		ray = nullptr;
 	}
 }
-
-unsigned int GameScene::score = 0;
 
 void GameScene::add_ray(float x) {
 	Ray* ray = new Ray();
@@ -192,7 +190,7 @@ void GameScene::event_handler(sf::Event* event) {
 			if (ray->origin.x <= -100) ray->tickable = false;
 
 			if (rayIntersectsSprite(*ray, *player_sprite)) {
-				this->score++;
+				score++;
 				std::cout<<score<<std::endl;
 				ray->tickable = false;
 			}
@@ -200,7 +198,7 @@ void GameScene::event_handler(sf::Event* event) {
 	}
 
 	if (this->player->dead && this->clock.getElapsedTime().asSeconds() >= 3.0f) 
-		GameEvent::state = "player_dead";
+		state = "player_dead";
 
 	if (event->type == sf::Event::KeyPressed) {
 			if (event->key.code == sf::Keyboard::Up && !this->player_jumping && !this->player->dead) {
