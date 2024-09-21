@@ -75,7 +75,7 @@ class PipeTicker : public SpriteTicker {
 			this->sprite = pipe_sprite;
 			this->texture_ptr = pipe_texture;
 
-			this->sprite->setPosition(600, 400);
+			this->sprite->setPosition(700, 400);
 			this->sprite->setOrigin(26, 0);
 			this->sprite->setScale(SCALE);
 		}
