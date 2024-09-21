@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <random>
+#include <iostream>
 
-#include "../objects/sprite.hpp"
 #include "../objects/event.hpp"
 #include "../util/texture.hpp"
 
@@ -11,6 +11,24 @@ const float SPEED = 1.0f;
 const sf::Vector2f SCALE = sf::Vector2f(2.0f, 2.0f); const float JUMP_POWER = 10.0f;
 const float PIPE_INTERVAL = 3.5f;
 const float PIPE_GAP = 280.0f;
+
+bool rayIntersectsSprite(const Ray& ray, const sf::Sprite& sprite) {
+	sf::FloatRect bounds = sprite.getGlobalBounds();
+	
+	float tmin = (bounds.left - ray.origin.x) / ray.direction.x;
+	float tmax = ((bounds.left + bounds.width) - ray.origin.x) / ray.direction.x;
+	
+	if (tmin > tmax) std::swap(tmin, tmax);
+	
+	float tymin = (bounds.top - ray.origin.y) / ray.direction.y;
+	float tymax = ((bounds.top + bounds.height) - ray.origin.y) / ray.direction.y;
+	
+	if (tymin > tymax) std::swap(tymin, tymax);
+	
+	if ((tmin > tymax) || (tymin > tmax)) return false;
+	
+	return true;
+}
 
 FlappyBirdTicker::FlappyBirdTicker() : SpriteTicker() {
 	sf::Texture* flappy_texture = new sf::Texture();
@@ -61,8 +79,8 @@ class PipeTicker : public SpriteTicker {
 			this->sprite->setOrigin(26, 0);
 			this->sprite->setScale(SCALE);
 		}
-		
 		~PipeTicker() override {};
+
 
 		void tick() override {
 			if (!this->ticking) return;
@@ -71,6 +89,8 @@ class PipeTicker : public SpriteTicker {
 };
 
 GameScene::GameScene() {
+	this->score = 0;
+
 	FlappyBirdTicker* flappy_ticker = new FlappyBirdTicker();
 	this->player = flappy_ticker;
 	this->player->dead = false;
@@ -87,11 +107,31 @@ GameScene::GameScene() {
 	this->dis = dis;
 }
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+	for (Ray* ray : this->rays) {
+		if (ray == nullptr) continue;
+		delete ray;
+		ray = nullptr;
+	}
+}
+
+unsigned int GameScene::score = 0;
+
+void GameScene::add_ray(float x) {
+	Ray* ray = new Ray();
+	ray->origin = sf::Vector2f(x, 0.f);
+	ray->direction = sf::Vector2f(0.f, 1.f);
+	ray->tickable = true;
+
+	rays.push_back(ray);
+}
 
 void GameScene::add_pipe_set(float y) {
 		PipeTicker* pipe_ticker = new PipeTicker();
 		pipe_ticker->sprite->setPosition(pipe_ticker->sprite->getPosition().x, y);
+
+		this->add_ray(pipe_ticker->sprite->getPosition().x);
+
 		this->add_sprite_ticker(pipe_ticker);
 
 		PipeTicker* pipe_ticker_pair = new PipeTicker();
@@ -125,6 +165,20 @@ void GameScene::event_handler(sf::Event* event) {
 		}
 	}
 
+	if (!player->dead) {
+		for (Ray* ray : this->rays) {
+			if (ray == nullptr || !ray->tickable) continue;
+			ray->origin.x -= SPEED;
+			if (ray->origin.x <= -100) ray->tickable = false;
+
+			if (rayIntersectsSprite(*ray, *player->sprite)) {
+				this->score++;
+				std::cout<<score<<std::endl;
+				ray->tickable = false;
+			}
+		}
+	}
+
 	if (this->player->dead && this->clock.getElapsedTime().asSeconds() >= 3.0f) 
 		GameEvent::state = "player_dead";
 
@@ -132,9 +186,7 @@ void GameScene::event_handler(sf::Event* event) {
 			if (event->key.code == sf::Keyboard::Up && !this->player_jumping && !this->player->dead) {
 				this->player->jump();
 				this->player_jumping = true;
-			}
-	}
-
+			} }
 	if (event->type == sf::Event::KeyReleased) {
 		if (event->key.code == sf::Keyboard::Up && this->player_jumping && !this->player->dead) {
 				this->player_jumping = false;
