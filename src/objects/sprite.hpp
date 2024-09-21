@@ -12,7 +12,7 @@ class SpriteTicker {
 		
 		bool visible;
 		bool ticking;
-		sf::Sprite* sprite;
+		sf::Drawable* sprite;
 		sf::Texture* texture_ptr;
 
 	private:

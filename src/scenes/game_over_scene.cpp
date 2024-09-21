@@ -1,6 +1,7 @@
 #include "../util/texture.hpp"
 
 #include "game_over_scene.hpp"
+#include "game_scene.hpp"
 
 class GameOverSpriteTicker : public SpriteTicker {
 	public:
@@ -27,7 +28,8 @@ void ButtonSpriteTicker::tick() {};
 
 GameOverScene::GameOverScene() {
 	GameOverSpriteTicker* game_over = new GameOverSpriteTicker();
-	game_over->sprite->setPosition(sf::Vector2f(100, 200));
+	sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(game_over->sprite);
+	sprite->setPosition(sf::Vector2f(100, 200));
 	this->add_sprite_ticker(game_over);
 }
 GameOverScene::~GameOverScene() {}

@@ -36,13 +36,15 @@ FlappyBirdTicker::FlappyBirdTicker() : SpriteTicker() {
 	sf::Sprite* flappy_sprite = new sf::Sprite();
 	flappy_sprite->setTexture(*flappy_texture);
 
+	sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(flappy_sprite);
+
 	this->sprite = flappy_sprite;
 	this->texture_ptr = flappy_texture;
 
-	this->sprite->setPosition(200, 0);
-	this->sprite->setScale(SCALE);
+	sprite->setPosition(200, 0);
+	sprite->setScale(SCALE);
 	this->set_gravity(0.3f);
-	this->sprite->setOrigin(15, 15);
+	sprite->setOrigin(15, 15);
 }
 
 FlappyBirdTicker::~FlappyBirdTicker() {}
@@ -53,13 +55,15 @@ void FlappyBirdTicker::jump() {
 
 void FlappyBirdTicker::change_angle_by_y_velocity() {
 	float velocity_y = this->get_velocity().y;
-	this->sprite->setRotation(velocity_y*3);
+	sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(this->sprite);
+	sprite->setRotation(velocity_y*3);
 }
 
 void FlappyBirdTicker::tick() {
+	sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(this->sprite);
 	this->gravity_calculation();
-	if (this->sprite->getPosition().y > 1100) this->set_velocity(0, -1);
-  this->apply_velocity(this->sprite);
+	if (sprite->getPosition().y > 1100) this->set_velocity(0, -1);
+  this->apply_velocity(sprite);
 	this->change_angle_by_y_velocity();
 }
 
@@ -75,16 +79,19 @@ class PipeTicker : public SpriteTicker {
 			this->sprite = pipe_sprite;
 			this->texture_ptr = pipe_texture;
 
-			this->sprite->setPosition(700, 400);
-			this->sprite->setOrigin(26, 0);
-			this->sprite->setScale(SCALE);
+			sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(this->sprite);
+			sprite->setPosition(700, 400);
+			sprite->setOrigin(26, 0);
+			sprite->setScale(SCALE);
 		}
 		~PipeTicker() override {};
 
 
 		void tick() override {
 			if (!this->ticking) return;
-			this->sprite->move(-1.0f * SPEED, 0);
+
+			sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(this->sprite);
+			sprite->move(-1.0f * SPEED, 0);
 		}
 };
 
@@ -134,20 +141,23 @@ void GameScene::add_ray(float x) {
 
 void GameScene::add_pipe_set(float y) {
 		PipeTicker* pipe_ticker = new PipeTicker();
-		pipe_ticker->sprite->setPosition(pipe_ticker->sprite->getPosition().x, y);
+		sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(pipe_ticker->sprite);
+		sprite->setPosition(sprite->getPosition().x, y);
 
-		this->add_ray(pipe_ticker->sprite->getPosition().x);
+		this->add_ray(sprite->getPosition().x);
 
 		this->add_sprite_ticker(pipe_ticker);
 
 		PipeTicker* pipe_ticker_pair = new PipeTicker();
-		pipe_ticker_pair->sprite->setRotation(180);
-		pipe_ticker_pair->sprite->setPosition(pipe_ticker->sprite->getPosition().x, pipe_ticker->sprite->getPosition().y - PIPE_GAP);
+		sf::Sprite* sprite_pair = dynamic_cast<sf::Sprite*>(pipe_ticker_pair->sprite);
+		sprite_pair->setRotation(180);
+		sprite_pair->setPosition(sprite->getPosition().x, sprite->getPosition().y - PIPE_GAP);
 
 		this->add_sprite_ticker(pipe_ticker_pair);
 }
 
 void GameScene::event_handler(sf::Event* event) {
+	sf::Sprite* player_sprite = dynamic_cast<sf::Sprite*>(this->player->sprite);
 	if (this->clock.getElapsedTime().asSeconds() >= PIPE_INTERVAL && !this->player->dead) {
 		// 400 ~ 800
 		this->add_pipe_set(this->dis(this->gen));
@@ -155,13 +165,15 @@ void GameScene::event_handler(sf::Event* event) {
 	}
 	
 	for (SpriteTicker* sprite_ticker: this->sprite_tickers) {
-		if (sprite_ticker->sprite->getPosition().x <= -100) {
+		sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(sprite_ticker->sprite);
+
+		if (sprite->getPosition().x <= -100) {
 			sprite_ticker->visible = false;
 			sprite_ticker->ticking = false;
 		}
 
 		if (sprite_ticker != this->player && sprite_ticker->visible && !this->player->dead) {
-			if (player->sprite->getGlobalBounds().intersects(sprite_ticker->sprite->getGlobalBounds())) {
+			if (player_sprite->getGlobalBounds().intersects(sprite->getGlobalBounds())) {
 				this->player->dead = true;
 				player_hit_sound.play();
 				player_die_sound.play();
@@ -179,7 +191,7 @@ void GameScene::event_handler(sf::Event* event) {
 			ray->origin.x -= SPEED;
 			if (ray->origin.x <= -100) ray->tickable = false;
 
-			if (rayIntersectsSprite(*ray, *player->sprite)) {
+			if (rayIntersectsSprite(*ray, *player_sprite)) {
 				this->score++;
 				std::cout<<score<<std::endl;
 				ray->tickable = false;
