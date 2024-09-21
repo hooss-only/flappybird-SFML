@@ -22,6 +22,8 @@ void Scene::tick() {
 	}
 }
 
+void Scene::init() {}
+
 void Scene::event_handler(sf::Event* event) {}
 
 void Scene::drop() {
@@ -44,11 +46,13 @@ void SceneManager::render(sf::RenderWindow* window) {
 
 void SceneManager::set_scene(Scene* scene) {
 	this->current_scene = scene;
+	current_scene->init();
 }
 
 void SceneManager::change_scene(Scene* scene) {
 	current_scene->drop();
 	this->current_scene = scene;
+	current_scene->init();
 }
 
 void SceneManager::tick() {

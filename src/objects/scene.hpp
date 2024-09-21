@@ -13,6 +13,7 @@ class Scene {
 		void tick();
 		void render(sf::RenderWindow* window);
 		virtual void event_handler(sf::Event* event);
+		virtual void init();
 
 		void drop();
 	
