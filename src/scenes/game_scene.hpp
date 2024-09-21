@@ -8,6 +8,7 @@
 #include "../objects/scene.hpp"
 #include "../objects/sprite.hpp"
 #include "../objects/physics.hpp"
+
 class FlappyBirdTicker : public SpriteTicker, PhysicalObject {
 	public:
 		FlappyBirdTicker();
@@ -47,6 +48,12 @@ class GameScene : public Scene {
 		sf::Clock clock;
 		bool player_jumping;
 		FlappyBirdTicker* player;
+
+		sf::Sound player_hit_sound;
+		sf::Sound player_die_sound;
+
+		sf::SoundBuffer player_hit_sound_buff;
+		sf::SoundBuffer player_die_sound_buff;
 };
 
 #endif

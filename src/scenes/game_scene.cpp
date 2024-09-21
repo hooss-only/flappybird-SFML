@@ -2,6 +2,7 @@
 
 #include "../objects/event.hpp"
 #include "../util/texture.hpp"
+#include "../util/audio.hpp"
 
 #include "game_scene.hpp"
 
@@ -96,6 +97,12 @@ GameScene::GameScene() {
 	this->add_sprite_ticker(flappy_ticker);
 	this->player_jumping = false;
 
+	load_audio(&this->player_hit_sound_buff, "sounds/hit.wav");
+	load_audio(&this->player_die_sound_buff, "sounds/die.wav");
+	
+	player_hit_sound.setBuffer(player_hit_sound_buff);
+	player_die_sound.setBuffer(player_die_sound_buff);
+
 	this->clock.restart();
 
 	std::random_device rd;
@@ -153,9 +160,11 @@ void GameScene::event_handler(sf::Event* event) {
 			sprite_ticker->ticking = false;
 		}
 
-		if (sprite_ticker != this->player && sprite_ticker->visible) {
+		if (sprite_ticker != this->player && sprite_ticker->visible && !this->player->dead) {
 			if (player->sprite->getGlobalBounds().intersects(sprite_ticker->sprite->getGlobalBounds())) {
 				this->player->dead = true;
+				player_hit_sound.play();
+				player_die_sound.play();
 				for (SpriteTicker* sprite_ticker: this->sprite_tickers) {
 					if (sprite_ticker != this->player && sprite_ticker->visible) sprite_ticker->ticking = false;
 				}

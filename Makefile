@@ -1,6 +1,6 @@
 CC=clang++
 FLAGS=-Wall -g
-LDFLAGS=-lsfml-graphics -lsfml-window -lsfml-system
+LDFLAGS=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 BIN=bin
 TARGET=$(BIN)/flappybird
