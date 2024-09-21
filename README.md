@@ -1,6 +1,8 @@
 # flappybird sfml
 SFML을 이용한 Flappybird 모작.<br>
-SFML 첫 프로젝트, My first SFML project.
+SFML 첫 프로젝트, My first SFML project.<br>
+<br>
+Resources by [kosrestr55](https://kosresetr55.itch.io/flappy-bird-assets-by-kosresetr55)
 
 # how to play
 ```
