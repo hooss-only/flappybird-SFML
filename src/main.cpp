@@ -11,8 +11,7 @@
 #define TITLE "FlappyBird"
 
 int main() {
-	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT),TITLE);
-	sf::Clock clock;
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT),TITLE); sf::Clock clock;
 	const float fixedTimeStep = 1.0f / 60.0f; // 60 FPS
 
 	SceneManager scene_manager;
@@ -39,6 +38,7 @@ int main() {
 
 		if (GameEvent::state == "player_dead") {
 			scene_manager.change_scene(game_over_scene);
+			std::cout << "player_dead" << std::endl;
 			GameEvent::state = "game_end";
 		}
 

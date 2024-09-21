@@ -45,6 +45,7 @@ FlappyBirdTicker::FlappyBirdTicker() : SpriteTicker() {
 	this->set_gravity(0.3f);
 	this->sprite->setOrigin(15, 15);
 }
+
 FlappyBirdTicker::~FlappyBirdTicker() {}
 
 void FlappyBirdTicker::jump() {
