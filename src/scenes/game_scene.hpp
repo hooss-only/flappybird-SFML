@@ -2,6 +2,7 @@
 #define GAME_SCENE_HPP
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <random>
 
 #include "../objects/scene.hpp"

@@ -1,5 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <random>
 #include <iostream>
 
 #include "../objects/event.hpp"
