@@ -9,7 +9,7 @@
 
 class GameOverSpriteTicker : public SpriteTicker {
 	public:
-		GameOverSpriteTicker() {
+		GameOverSpriteTicker() : SpriteTicker() {
 			sf::Texture* texture = new sf::Texture();
 			load_texture(texture, "sprites/gameover.png");
 
@@ -27,7 +27,8 @@ class GameOverSpriteTicker : public SpriteTicker {
 
 class ScoreTextTicker : public SpriteTicker {
 	public:
-		ScoreTextTicker() {
+		ScoreTextTicker() : SpriteTicker() {
+			std::cout << "constructor of text called." << std::endl;
 			this->font = new sf::Font();
 			load_font(this->font, "fonts/DepartureMono-Regular.otf");
 			
@@ -36,12 +37,13 @@ class ScoreTextTicker : public SpriteTicker {
 			text->setString(std::to_string(score));
 			text->setCharacterSize(26);
 			text->setFillColor(sf::Color::White);
+			std::cout << "made a text" << std::endl;
 
 			sf::FloatRect textBounds = text->getLocalBounds();
 			text->setOrigin(textBounds.width / 2.f, textBounds.height / 2.f);
 
 			this->sprite = text;
-			this->texture_ptr = nullptr;
+			this->texture_ptr = nullptr; 
 		}
 
 		~ScoreTextTicker() override {
@@ -72,12 +74,15 @@ void GameOverScene::init() {
 	sprite->setPosition(sf::Vector2f(100, 200));
 	this->add_sprite_ticker(game_over);
 
-	ScoreTextTicker* score = new ScoreTextTicker();
-	sf::Text* s_s = dynamic_cast<sf::Text*>(score->sprite);
+	ScoreTextTicker* score_ticker = new ScoreTextTicker();
+	std::cout << score_ticker << std::endl;
+	sf::Text* s_s = dynamic_cast<sf::Text*>(score_ticker->sprite);
+	std::cout << s_s << std::endl;
 	
-	s_s->setPosition(sf::Vector2f(300, 500));
+	if (s_s) 
+		s_s->setPosition(sf::Vector2f(300, 500));
 
-	this->add_sprite_ticker(score);
+	this->add_sprite_ticker(score_ticker);
 }
 
 void GameOverScene::event_handler(sf::Event* event) {
