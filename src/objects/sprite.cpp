@@ -3,6 +3,8 @@
 #include "sprite.hpp"
 
 SpriteTicker::SpriteTicker() {
+	this->sprite = nullptr;
+	this->texture_ptr = nullptr;
 	this->visible = true;
 	this->ticking = true;
 }
