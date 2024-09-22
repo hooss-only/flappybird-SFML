@@ -29,11 +29,9 @@ class ScoreTextTicker : public SpriteTicker {
 	public:
 		ScoreTextTicker() : SpriteTicker() {
 			std::cout << "constructor of text called." << std::endl;
-			this->font = new sf::Font();
-			load_font(this->font, "fonts/DepartureMono-Regular.otf");
-			
+
 			sf::Text* text = new sf::Text();
-			text->setFont(*font);
+			text->setFont(*game_font);
 			text->setString(std::to_string(score));
 			text->setCharacterSize(26);
 			text->setFillColor(sf::Color::White);
@@ -47,15 +45,7 @@ class ScoreTextTicker : public SpriteTicker {
 		}
 
 		~ScoreTextTicker() override {
-			std::cout << "dropping font" << std::endl;
-			if (this->font != nullptr)
-				delete font;
-			font = nullptr;
-			std::cout << "dropped" << std::endl;
 		}
-
-	private:
-		sf::Font* font;
 };
 
 ButtonSpriteTicker::ButtonSpriteTicker() {}

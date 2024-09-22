@@ -29,6 +29,14 @@ struct Ray {
 	bool tickable;
 };
 
+class LiveScoreTextTicker : public SpriteTicker {
+	public:
+		LiveScoreTextTicker();
+		~LiveScoreTextTicker() override;
+
+		void tick() override;
+};
+
 class GameScene : public Scene {
 	public:
 		GameScene();
@@ -46,12 +54,14 @@ class GameScene : public Scene {
 		sf::Clock clock;
 		bool player_jumping;
 		FlappyBirdTicker* player;
+		LiveScoreTextTicker* score_text;
 
 		sf::Sound player_hit_sound;
 		sf::Sound player_die_sound;
 
 		sf::SoundBuffer player_hit_sound_buff;
 		sf::SoundBuffer player_die_sound_buff;
+
 };
 
 #endif

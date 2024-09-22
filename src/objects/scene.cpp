@@ -1,15 +1,21 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <algorithm>
 #include "scene.hpp"
 
 Scene::Scene() {}
 Scene::~Scene() {}
+
+bool compare_depth(SpriteTicker* a, SpriteTicker* b) {
+	return a->depth < b->depth;
+}
 
 void Scene::add_sprite_ticker(SpriteTicker* sprite_ticker) {
 	this->sprite_tickers.push_back(sprite_ticker);
 }
 
 void Scene::render(sf::RenderWindow* window) {
+	std::sort(this->sprite_tickers.begin(), this->sprite_tickers.end(), compare_depth);
 	for (SpriteTicker* sprite_ticker : this->sprite_tickers) {
 		if (sprite_ticker == nullptr || sprite_ticker->sprite == nullptr || !sprite_ticker->visible) continue;
 		window->draw(*sprite_ticker->sprite); 

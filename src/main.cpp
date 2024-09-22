@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+#include "util/font.hpp"
 #include "objects/scene.hpp"
 #include "objects/event.hpp"
 #include "scenes/game_scene.hpp"
@@ -13,6 +14,8 @@
 int main() {
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT),TITLE); sf::Clock clock;
 	const float fixedTimeStep = 1.0f / 60.0f; // 60 FPS
+	
+	load_all_fonts();
 
 	SceneManager scene_manager;
 
@@ -43,14 +46,19 @@ int main() {
 		}
 
 		window.clear();
+		std::cout << "hi" << std::endl;
 		scene_manager.event_handler(&event);
+		std::cout << "hi" << std::endl;
 		scene_manager.tick();
+		std::cout << "hi" << std::endl;
 		scene_manager.render(&window);
+		std::cout << "hi" << std::endl;
 		window.display();
 
 		sf::sleep(sf::seconds(fixedTimeStep - deltaTime));
 	}
 
+	unload_all_fonts();
 	delete game_scene;
 	delete game_over_scene;
 

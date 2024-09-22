@@ -3,6 +3,7 @@
 #include "../objects/event.hpp"
 #include "../util/texture.hpp"
 #include "../util/audio.hpp"
+#include "../util/font.hpp"
 
 #include "game_scene.hpp"
 
@@ -95,11 +96,32 @@ class PipeTicker : public SpriteTicker {
 		}
 };
 
+
+LiveScoreTextTicker::LiveScoreTextTicker() {
+	sf::Text* text = new sf::Text();
+	text->setFont(*game_font);
+	text->setString(std::to_string(score));
+	text->setCharacterSize(26);
+	text->setFillColor(sf::Color::White);
+
+	sf::FloatRect textBounds = text->getLocalBounds();
+	text->setOrigin(textBounds.width / 2.f, textBounds.height / 2.f);
+	
+	this->sprite = text;
+	this->texture_ptr = nullptr;
+}
+
+LiveScoreTextTicker::~LiveScoreTextTicker() {
+}
+
+void LiveScoreTextTicker::tick() {}
+
 GameScene::GameScene() {
 	score = 0;
 
 	FlappyBirdTicker* flappy_ticker = new FlappyBirdTicker();
 	this->player = flappy_ticker;
+	this->player->depth = 1;
 	this->player->dead = false;
 	this->add_sprite_ticker(flappy_ticker);
 	this->player_jumping = false;
@@ -111,6 +133,12 @@ GameScene::GameScene() {
 	player_die_sound.setBuffer(player_die_sound_buff);
 
 	this->clock.restart();
+
+	LiveScoreTextTicker* score_ticker = new LiveScoreTextTicker();
+	this->score_text = score_ticker;
+	this->score_text->depth = 2;
+	
+	this->add_sprite_ticker(score_ticker);
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -165,6 +193,9 @@ void GameScene::event_handler(sf::Event* event) {
 	for (SpriteTicker* sprite_ticker: this->sprite_tickers) {
 		sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(sprite_ticker->sprite);
 
+		if (!sprite)
+			continue;
+
 		if (sprite->getPosition().x <= -100) {
 			sprite_ticker->visible = false;
 			sprite_ticker->ticking = false;
@@ -183,6 +214,7 @@ void GameScene::event_handler(sf::Event* event) {
 		}
 	}
 
+	std::cout << "hello" << std::endl;
 	if (!player->dead) {
 		for (Ray* ray : this->rays) {
 			if (ray == nullptr || !ray->tickable) continue;
