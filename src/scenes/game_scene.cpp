@@ -106,6 +106,8 @@ LiveScoreTextTicker::LiveScoreTextTicker() {
 
 	sf::FloatRect textBounds = text->getLocalBounds();
 	text->setOrigin(textBounds.width / 2.f, textBounds.height / 2.f);
+
+	text->setPosition(300, 20);
 	
 	this->sprite = text;
 	this->texture_ptr = nullptr;
@@ -214,7 +216,6 @@ void GameScene::event_handler(sf::Event* event) {
 		}
 	}
 
-	std::cout << "hello" << std::endl;
 	if (!player->dead) {
 		for (Ray* ray : this->rays) {
 			if (ray == nullptr || !ray->tickable) continue;
@@ -223,6 +224,10 @@ void GameScene::event_handler(sf::Event* event) {
 
 			if (rayIntersectsSprite(*ray, *player_sprite)) {
 				score++;
+				sf::Text* s_t = dynamic_cast<sf::Text*>(score_text->sprite);
+
+				s_t->setString(std::to_string(score));
+
 				std::cout<<score<<std::endl;
 				ray->tickable = false;
 			}

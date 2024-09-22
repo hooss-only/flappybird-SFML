@@ -46,13 +46,9 @@ int main() {
 		}
 
 		window.clear();
-		std::cout << "hi" << std::endl;
 		scene_manager.event_handler(&event);
-		std::cout << "hi" << std::endl;
 		scene_manager.tick();
-		std::cout << "hi" << std::endl;
 		scene_manager.render(&window);
-		std::cout << "hi" << std::endl;
 		window.display();
 
 		sf::sleep(sf::seconds(fixedTimeStep - deltaTime));
