@@ -28,14 +28,11 @@ class GameOverSpriteTicker : public SpriteTicker {
 class ScoreTextTicker : public SpriteTicker {
 	public:
 		ScoreTextTicker() : SpriteTicker() {
-			std::cout << "constructor of text called." << std::endl;
-
 			sf::Text* text = new sf::Text();
 			text->setFont(*game_font);
 			text->setString(std::to_string(score));
 			text->setCharacterSize(26);
 			text->setFillColor(sf::Color::White);
-			std::cout << "made a text" << std::endl;
 
 			sf::FloatRect textBounds = text->getLocalBounds();
 			text->setOrigin(textBounds.width / 2.f, textBounds.height / 2.f);
@@ -65,9 +62,7 @@ void GameOverScene::init() {
 	this->add_sprite_ticker(game_over);
 
 	ScoreTextTicker* score_ticker = new ScoreTextTicker();
-	std::cout << score_ticker << std::endl;
 	sf::Text* s_s = dynamic_cast<sf::Text*>(score_ticker->sprite);
-	std::cout << s_s << std::endl;
 	
 	if (s_s) 
 		s_s->setPosition(sf::Vector2f(300, 500));
