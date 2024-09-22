@@ -58,10 +58,11 @@ class GameScene : public Scene {
 
 		sf::Sound player_hit_sound;
 		sf::Sound player_die_sound;
+		sf::Sound point_sound;
 
 		sf::SoundBuffer player_hit_sound_buff;
 		sf::SoundBuffer player_die_sound_buff;
-
+		sf::SoundBuffer point_sound_buff;
 };
 
 #endif

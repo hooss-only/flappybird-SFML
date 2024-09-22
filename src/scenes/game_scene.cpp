@@ -130,9 +130,11 @@ GameScene::GameScene() {
 
 	load_audio(&this->player_hit_sound_buff, "sounds/hit.wav");
 	load_audio(&this->player_die_sound_buff, "sounds/die.wav");
+	load_audio(&this->point_sound_buff, "sounds/point.wav");
 	
 	player_hit_sound.setBuffer(player_hit_sound_buff);
 	player_die_sound.setBuffer(player_die_sound_buff);
+	point_sound.setBuffer(point_sound_buff);
 
 	this->clock.restart();
 
@@ -223,6 +225,7 @@ void GameScene::event_handler(sf::Event* event) {
 			if (ray->origin.x <= -100) ray->tickable = false;
 
 			if (rayIntersectsSprite(*ray, *player_sprite)) {
+				point_sound.play();
 				score++;
 				sf::Text* s_t = dynamic_cast<sf::Text*>(score_text->sprite);
 
