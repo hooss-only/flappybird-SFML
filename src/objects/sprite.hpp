@@ -10,6 +10,7 @@ class SpriteTicker {
 
 		virtual void tick();
 		
+		int depth;
 		bool visible;
 		bool ticking;
 		sf::Drawable* sprite;
