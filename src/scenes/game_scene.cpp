@@ -67,7 +67,10 @@ void FlappyBirdTicker::tick() {
 	this->gravity_calculation();
 	if (sprite->getPosition().y > 1000 || sprite->getPosition().y < 0) {
 		this->dead = true;
-		this->set_velocity(0, sprite->getPosition().y < 0);
+		if (sprite->getPosition().y < 0) {
+			this->set_velocity(0, 1);
+			
+		}
 	}
   this->apply_velocity(sprite);
 	this->change_angle_by_y_velocity();
@@ -222,6 +225,16 @@ void GameScene::add_pipe_set(float y) {
 
 void GameScene::event_handler(sf::Event* event) {
 	sf::Sprite* player_sprite = dynamic_cast<sf::Sprite*>(this->player->sprite);
+	
+	if (player_sprite->getPosition().y < 0) {
+		this->player_hit_sound.play();
+		this->player_die_sound.play();
+	}
+
+	if (!player->dead && player_sprite->getPosition().y > 1000) {
+		this->player_die_sound.play();
+	}
+
 	if (this->clock.getElapsedTime().asSeconds() >= 1 && count > 0) {
 		count--;
 		sf::Text* text = dynamic_cast<sf::Text*>(this->start_count_text->sprite);
