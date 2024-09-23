@@ -286,12 +286,12 @@ void GameScene::event_handler(sf::Event* event) {
 		state = "player_dead";
 
 	if (event->type == sf::Event::KeyPressed) {
-			if (event->key.code == sf::Keyboard::Up && !this->player_jumping && !this->player->dead) {
+			if (event->key.code == sf::Keyboard::Up && this->player->ticking && !this->player_jumping && !this->player->dead) {
 				this->player->jump();
 				this->player_jumping = true;
 			} }
 	if (event->type == sf::Event::KeyReleased) {
-		if (event->key.code == sf::Keyboard::Up && this->player_jumping && !this->player->dead) {
+		if (event->key.code == sf::Keyboard::Up && this->player->ticking && this->player_jumping && !this->player->dead) {
 				this->player_jumping = false;
 			}
 	}
