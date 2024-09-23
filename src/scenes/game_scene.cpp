@@ -118,7 +118,17 @@ LiveScoreTextTicker::~LiveScoreTextTicker() {
 
 void LiveScoreTextTicker::tick() {}
 
-GameScene::GameScene() {
+GameScene::GameScene() {}
+
+GameScene::~GameScene() {
+	for (Ray* ray : this->rays) {
+		if (ray == nullptr) continue;
+		delete ray;
+		ray = nullptr;
+	}
+}
+
+void GameScene::init() {
 	score = 0;
 
 	FlappyBirdTicker* flappy_ticker = new FlappyBirdTicker();
@@ -150,14 +160,6 @@ GameScene::GameScene() {
 
 	this->gen = gen;
 	this->dis = dis;
-}
-
-GameScene::~GameScene() {
-	for (Ray* ray : this->rays) {
-		if (ray == nullptr) continue;
-		delete ray;
-		ray = nullptr;
-	}
 }
 
 void GameScene::add_ray(float x) {
