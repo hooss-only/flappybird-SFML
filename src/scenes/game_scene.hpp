@@ -36,6 +36,14 @@ class LiveScoreTextTicker : public SpriteTicker {
 		void tick() override;
 };
 
+class StartCountDownTicker : public SpriteTicker {
+	public:
+		StartCountDownTicker();
+		~StartCountDownTicker() override;
+
+		void tick() override;
+};
+
 class GameScene : public Scene {
 	public:
 		GameScene();
@@ -47,6 +55,8 @@ class GameScene : public Scene {
 	private:
 		void add_ray(float x);
 		void add_pipe_set(float y);
+
+		unsigned int count;
 	
 		std::vector<Ray*> rays;
 		std::mt19937 gen;
@@ -55,6 +65,7 @@ class GameScene : public Scene {
 		bool player_jumping;
 		FlappyBirdTicker* player;
 		LiveScoreTextTicker* score_text;
+		StartCountDownTicker* start_count_text;
 
 		sf::Sound player_hit_sound;
 		sf::Sound player_die_sound;

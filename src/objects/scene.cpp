@@ -24,7 +24,8 @@ void Scene::render(sf::RenderWindow* window) {
 
 void Scene::tick() {
 	for (auto& sprite_ticker : sprite_tickers) {
-		sprite_ticker->tick();
+		if (sprite_ticker->ticking)
+			sprite_ticker->tick();
 	}
 }
 

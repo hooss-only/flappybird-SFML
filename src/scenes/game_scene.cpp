@@ -31,6 +31,8 @@ bool rayIntersectsSprite(const Ray& ray, const sf::Sprite& sprite) {
 }
 
 FlappyBirdTicker::FlappyBirdTicker() : SpriteTicker() {
+	this->ticking = false;
+
 	sf::Texture* flappy_texture = new sf::Texture();
 	load_texture(flappy_texture, "sprites/flappy.png");
 
@@ -42,7 +44,7 @@ FlappyBirdTicker::FlappyBirdTicker() : SpriteTicker() {
 	this->sprite = flappy_sprite;
 	this->texture_ptr = flappy_texture;
 
-	sprite->setPosition(200, 0);
+	sprite->setPosition(200, 400);
 	sprite->setScale(SCALE);
 	this->set_gravity(0.3f);
 	sprite->setOrigin(15, 15);
@@ -113,10 +115,28 @@ LiveScoreTextTicker::LiveScoreTextTicker() {
 	this->texture_ptr = nullptr;
 }
 
-LiveScoreTextTicker::~LiveScoreTextTicker() {
-}
+LiveScoreTextTicker::~LiveScoreTextTicker() {}
 
 void LiveScoreTextTicker::tick() {}
+
+StartCountDownTicker::StartCountDownTicker() {
+	sf::Text* text = new sf::Text();
+	text->setFont(*game_font);
+	text->setCharacterSize(26);
+	text->setFillColor(sf::Color::White);
+
+	sf::FloatRect textBounds = text->getLocalBounds();
+	text->setOrigin(textBounds.width / 2.f, textBounds.height / 2.f);
+
+	text->setPosition(300, 400);
+	
+	this->sprite = text;
+	this->texture_ptr = nullptr;
+}
+
+StartCountDownTicker::~StartCountDownTicker() {}
+
+void StartCountDownTicker::tick() {}
 
 GameScene::GameScene() {}
 
@@ -130,6 +150,7 @@ GameScene::~GameScene() {
 
 void GameScene::init() {
 	score = 0;
+	this->count = 3;
 
 	FlappyBirdTicker* flappy_ticker = new FlappyBirdTicker();
 	this->player = flappy_ticker;
@@ -148,11 +169,19 @@ void GameScene::init() {
 
 	this->clock.restart();
 
-	LiveScoreTextTicker* score_ticker = new LiveScoreTextTicker();
-	this->score_text = score_ticker;
+	LiveScoreTextTicker* score_text = new LiveScoreTextTicker();
+	this->score_text = score_text;
 	this->score_text->depth = 2;
-	
-	this->add_sprite_ticker(score_ticker);
+	this->add_sprite_ticker(score_text);
+
+	StartCountDownTicker* start_count_text = new StartCountDownTicker();
+	this->start_count_text = start_count_text;
+	this->start_count_text->depth = 2;
+
+	sf::Text* count_text = dynamic_cast<sf::Text*>(this->start_count_text->sprite);
+	count_text->setString(std::to_string(this->count));
+
+	this->add_sprite_ticker(start_count_text);
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -190,6 +219,17 @@ void GameScene::add_pipe_set(float y) {
 
 void GameScene::event_handler(sf::Event* event) {
 	sf::Sprite* player_sprite = dynamic_cast<sf::Sprite*>(this->player->sprite);
+	if (this->clock.getElapsedTime().asSeconds() >= 1 && count > 0) {
+		count--;
+		sf::Text* text = dynamic_cast<sf::Text*>(this->start_count_text->sprite);
+		text->setString(std::to_string(this->count));
+		if (count == 0) {
+			this->player->ticking = true;
+			this->start_count_text->visible = false;
+		}
+		clock.restart();
+	}
+
 	if (this->clock.getElapsedTime().asSeconds() >= PIPE_INTERVAL && !this->player->dead) {
 		// 400 ~ 800
 		this->add_pipe_set(this->dis(this->gen));
