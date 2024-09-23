@@ -65,7 +65,10 @@ void FlappyBirdTicker::change_angle_by_y_velocity() {
 void FlappyBirdTicker::tick() {
 	sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(this->sprite);
 	this->gravity_calculation();
-	if (sprite->getPosition().y > 1100) this->set_velocity(0, -1);
+	if (sprite->getPosition().y > 1000 || sprite->getPosition().y < 0) {
+		this->dead = true;
+		this->set_velocity(0, sprite->getPosition().y < 0);
+	}
   this->apply_velocity(sprite);
 	this->change_angle_by_y_velocity();
 }
