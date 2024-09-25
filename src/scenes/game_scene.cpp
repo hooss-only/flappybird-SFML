@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "../objects/event.hpp"
 #include "../util/texture.hpp"
 #include "../util/audio.hpp"
