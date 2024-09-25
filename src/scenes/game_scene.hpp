@@ -77,6 +77,7 @@ class GameScene : public Scene {
 
 		BackgroundTicker* background1;
 		BackgroundTicker* background2;
+		BackgroundTicker* background3;
 
 		sf::Sound player_hit_sound;
 		sf::Sound player_die_sound;

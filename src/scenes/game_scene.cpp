@@ -142,6 +142,8 @@ StartCountDownTicker::~StartCountDownTicker() {}
 void StartCountDownTicker::tick() {}
 
 BackgroundTicker::BackgroundTicker() {
+	this->ticking = false;
+
 	sf::Sprite* sprite = new sf::Sprite;
 	
 	sf::Texture* texture = new sf::Texture();
@@ -156,7 +158,14 @@ BackgroundTicker::BackgroundTicker() {
 }
 BackgroundTicker::~BackgroundTicker() {}
 
-void BackgroundTicker::tick() {}
+void BackgroundTicker::tick() {
+	sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(this->sprite);
+	sprite->move(-SPEED/3, 0);
+
+	if (sprite->getPosition().x <= -555) {
+		sprite->setPosition(555*2, 0);
+	}
+}
 
 GameScene::GameScene() {}
 
@@ -211,6 +220,12 @@ void GameScene::init() {
 	this->add_sprite_ticker(background2);
 	this->background2 = background2;
 
+	BackgroundTicker* background3 = new BackgroundTicker();
+	sf::Sprite* b3_sprite = dynamic_cast<sf::Sprite*>(background3->sprite);
+	b3_sprite->setPosition(555 * 2, 0);
+	this->add_sprite_ticker(background3);
+	this->background3 = background3;
+
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<> dis(400.0f, 800.0f);
@@ -262,6 +277,9 @@ void GameScene::event_handler(sf::Event* event) {
 		sf::Text* text = dynamic_cast<sf::Text*>(this->start_count_text->sprite);
 		text->setString(std::to_string(this->count));
 		if (count == 0) {
+			this->background1->ticking = true;
+			this->background2->ticking = true;
+			this->background3->ticking = true;
 			this->player->ticking = true;
 			this->start_count_text->visible = false;
 		}
@@ -280,12 +298,12 @@ void GameScene::event_handler(sf::Event* event) {
 		if (!sprite)
 			continue;
 
-		if (sprite->getPosition().x <= -100) {
+		if (sprite_ticker != background1 && sprite_ticker != background2 && sprite_ticker != background3 && sprite->getPosition().x <= -100) {
 			sprite_ticker->visible = false;
 			sprite_ticker->ticking = false;
 		}
 
-		if (sprite_ticker != this->player && sprite_ticker != this->background1 && sprite_ticker != this->background2 && sprite_ticker  && sprite_ticker->visible && !this->player->dead) {
+		if (sprite_ticker != this->player && sprite_ticker != this->background1 && sprite_ticker != this->background2 && sprite_ticker != this->background3 && sprite_ticker->visible && !this->player->dead) {
 			if (player_sprite->getGlobalBounds().intersects(sprite->getGlobalBounds())) {
 				this->player->dead = true;
 				player_hit_sound.play();
