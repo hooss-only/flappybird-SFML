@@ -5,7 +5,7 @@
 
 #include "game_scene.hpp"
 
-const float SPEED = 1.f;
+const float SPEED = 2.f;
 const sf::Vector2f SCALE = sf::Vector2f(2.0f, 2.0f); const float JUMP_POWER = 10.0f;
 const float PIPE_INTERVAL = 3.f;
 const float PIPE_GAP = 280.0f;
@@ -142,8 +142,6 @@ StartCountDownTicker::~StartCountDownTicker() {}
 void StartCountDownTicker::tick() {}
 
 BackgroundTicker::BackgroundTicker() {
-	this->ticking = false;
-
 	sf::Sprite* sprite = new sf::Sprite;
 	
 	sf::Texture* texture = new sf::Texture();
@@ -156,6 +154,7 @@ BackgroundTicker::BackgroundTicker() {
 	this->sprite = sprite;
 	this->texture_ptr = texture;
 }
+
 BackgroundTicker::~BackgroundTicker() {}
 
 void BackgroundTicker::tick() {
@@ -277,9 +276,6 @@ void GameScene::event_handler(sf::Event* event) {
 		sf::Text* text = dynamic_cast<sf::Text*>(this->start_count_text->sprite);
 		text->setString(std::to_string(this->count));
 		if (count == 0) {
-			this->background1->ticking = true;
-			this->background2->ticking = true;
-			this->background3->ticking = true;
 			this->player->ticking = true;
 			this->start_count_text->visible = false;
 		}
