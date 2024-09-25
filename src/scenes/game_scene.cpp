@@ -7,9 +7,9 @@
 
 #include "game_scene.hpp"
 
-const float SPEED = 1.0f;
+const float SPEED = 1.f;
 const sf::Vector2f SCALE = sf::Vector2f(2.0f, 2.0f); const float JUMP_POWER = 10.0f;
-const float PIPE_INTERVAL = 3.5f;
+const float PIPE_INTERVAL = 3.f;
 const float PIPE_GAP = 280.0f;
 
 bool rayIntersectsSprite(const Ray& ray, const sf::Sprite& sprite) {
@@ -69,7 +69,6 @@ void FlappyBirdTicker::tick() {
 		this->dead = true;
 		if (sprite->getPosition().y < 0) {
 			this->set_velocity(0, 1);
-			
 		}
 	}
   this->apply_velocity(sprite);
@@ -144,6 +143,23 @@ StartCountDownTicker::~StartCountDownTicker() {}
 
 void StartCountDownTicker::tick() {}
 
+BackgroundTicker::BackgroundTicker() {
+	sf::Sprite* sprite = new sf::Sprite;
+	
+	sf::Texture* texture = new sf::Texture();
+	load_texture(texture, "sprites/background-day.png");
+	sprite->setTexture(*texture);
+
+	sprite->setPosition(0, 0);
+	sprite->setScale(2.f, 2.f);
+
+	this->sprite = sprite;
+	this->texture_ptr = texture;
+}
+BackgroundTicker::~BackgroundTicker() {}
+
+void BackgroundTicker::tick() {}
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
@@ -183,11 +199,19 @@ void GameScene::init() {
 	StartCountDownTicker* start_count_text = new StartCountDownTicker();
 	this->start_count_text = start_count_text;
 	this->start_count_text->depth = 2;
-
 	sf::Text* count_text = dynamic_cast<sf::Text*>(this->start_count_text->sprite);
 	count_text->setString(std::to_string(this->count));
-
 	this->add_sprite_ticker(start_count_text);
+
+	BackgroundTicker* background1 = new BackgroundTicker();
+	this->add_sprite_ticker(background1);
+	this->background1 = background1;
+
+	BackgroundTicker* background2 = new BackgroundTicker();
+	sf::Sprite* b2_sprite = dynamic_cast<sf::Sprite*>(background2->sprite);
+	b2_sprite->setPosition(555, 0);
+	this->add_sprite_ticker(background2);
+	this->background2 = background2;
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -263,7 +287,7 @@ void GameScene::event_handler(sf::Event* event) {
 			sprite_ticker->ticking = false;
 		}
 
-		if (sprite_ticker != this->player && sprite_ticker->visible && !this->player->dead) {
+		if (sprite_ticker != this->player && sprite_ticker != this->background1 && sprite_ticker != this->background2 && sprite_ticker  && sprite_ticker->visible && !this->player->dead) {
 			if (player_sprite->getGlobalBounds().intersects(sprite->getGlobalBounds())) {
 				this->player->dead = true;
 				player_hit_sound.play();

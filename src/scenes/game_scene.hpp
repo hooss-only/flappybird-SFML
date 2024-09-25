@@ -44,6 +44,14 @@ class StartCountDownTicker : public SpriteTicker {
 		void tick() override;
 };
 
+class BackgroundTicker : public SpriteTicker {
+	public:
+		BackgroundTicker();
+		~BackgroundTicker() override;
+
+		void tick() override;
+		
+};
 class GameScene : public Scene {
 	public:
 		GameScene();
@@ -66,6 +74,9 @@ class GameScene : public Scene {
 		FlappyBirdTicker* player;
 		LiveScoreTextTicker* score_text;
 		StartCountDownTicker* start_count_text;
+
+		BackgroundTicker* background1;
+		BackgroundTicker* background2;
 
 		sf::Sound player_hit_sound;
 		sf::Sound player_die_sound;
