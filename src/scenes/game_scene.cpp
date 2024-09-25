@@ -313,7 +313,6 @@ void GameScene::event_handler(sf::Event* event) {
 
 				s_t->setString(std::to_string(score));
 
-				std::cout<<score<<std::endl;
 				ray->tickable = false;
 			}
 		}
