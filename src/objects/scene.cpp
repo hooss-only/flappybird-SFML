@@ -16,13 +16,20 @@ void Scene::add_sprite_ticker(SpriteTicker* sprite_ticker) {
 }
 
 void Scene::render(sf::RenderWindow* window) {
+	sf::RenderTexture render;
+	render.create(window->getSize().x, window->getSize().y);
 	std::sort(this->sprite_tickers.begin(), this->sprite_tickers.end(), compare_depth);
 	for (SpriteTicker* sprite_ticker : this->sprite_tickers) {
 		if (sprite_ticker == nullptr) continue;
 		if (sprite_ticker->sprite == nullptr) continue;
 		if (!sprite_ticker->visible) continue;
-		window->draw(*sprite_ticker->sprite); 
+		render.draw(*sprite_ticker->sprite); 
 	}
+
+	sf::Sprite final_sprite(render.getTexture());
+	final_sprite.setScale(1, -1);
+	final_sprite.setPosition(0, window->getSize().y);
+	window->draw(final_sprite);
 }
 
 void Scene::tick() {

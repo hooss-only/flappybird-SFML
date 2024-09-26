@@ -5,7 +5,7 @@
 
 #include "game_scene.hpp"
 
-float SPEED = 2.f;
+const float SPEED = 2.f;
 const sf::Vector2f SCALE = sf::Vector2f(2.0f, 2.0f); const float JUMP_POWER = 10.0f;
 const float PIPE_INTERVAL = 3.f;
 const float PIPE_GAP = 280.0f;
@@ -337,6 +337,10 @@ void GameScene::event_handler(sf::Event* event) {
 		if (sprite_ticker != background1 && sprite_ticker != background2 && sprite_ticker != background3 && sprite_ticker != ground1 && sprite_ticker != ground2 && sprite->getPosition().x <= -100) {
 			sprite_ticker->visible = false;
 			sprite_ticker->ticking = false;
+			this->sprite_tickers.erase(std::remove(this->sprite_tickers.begin(), this->sprite_tickers.end(), sprite_ticker), sprite_tickers.end());
+			delete sprite_ticker;
+			sprite_ticker = nullptr;
+			break;
 		}
 
 		if (sprite_ticker != this->player && sprite_ticker != this->background1 && sprite_ticker != this->background2 && sprite_ticker != this->background3 && sprite_ticker != this->ground1 && sprite_ticker != this->ground2 && sprite_ticker->visible && !this->player->dead) {
