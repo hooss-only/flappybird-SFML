@@ -52,6 +52,15 @@ class BackgroundTicker : public SpriteTicker {
 		void tick() override;
 		
 };
+
+class GroundTicker : public SpriteTicker {
+	public:
+		GroundTicker();
+		~GroundTicker() override;
+
+		void tick() override;
+};
+
 class GameScene : public Scene {
 	public:
 		GameScene();
@@ -78,6 +87,9 @@ class GameScene : public Scene {
 		BackgroundTicker* background1;
 		BackgroundTicker* background2;
 		BackgroundTicker* background3;
+
+		GroundTicker* ground1;
+		GroundTicker* ground2;
 
 		sf::Sound player_hit_sound;
 		sf::Sound player_die_sound;

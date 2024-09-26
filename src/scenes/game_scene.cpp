@@ -5,7 +5,7 @@
 
 #include "game_scene.hpp"
 
-const float SPEED = 2.f;
+float SPEED = 2.f;
 const sf::Vector2f SCALE = sf::Vector2f(2.0f, 2.0f); const float JUMP_POWER = 10.0f;
 const float PIPE_INTERVAL = 3.f;
 const float PIPE_GAP = 280.0f;
@@ -63,10 +63,12 @@ void FlappyBirdTicker::change_angle_by_y_velocity() {
 void FlappyBirdTicker::tick() {
 	sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(this->sprite);
 	this->gravity_calculation();
-	if (sprite->getPosition().y > 1000 || sprite->getPosition().y < 0) {
+	if (sprite->getPosition().y > 780 || sprite->getPosition().y < 0) {
 		this->dead = true;
 		if (sprite->getPosition().y < 0) {
 			this->set_velocity(0, 1);
+		} else if (sprite->getPosition().y > 780) {
+			this->set_velocity(0, 0);
 		}
 	}
   this->apply_velocity(sprite);
@@ -166,6 +168,32 @@ void BackgroundTicker::tick() {
 	}
 }
 
+GroundTicker::GroundTicker() {
+	this->depth = 2;
+	sf::Sprite* sprite = new sf::Sprite();
+
+	sf::Texture* texture = new sf::Texture();
+	load_texture(texture, "sprites/base.png");
+	sprite->setTexture(*texture);
+	
+	sprite->setPosition(0, 800);
+	sprite->setScale(2.f, 2.f);
+
+	this->sprite = sprite;
+	this->texture_ptr = texture;
+}
+
+GroundTicker::~GroundTicker() {}
+
+void GroundTicker::tick() {
+	sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(this->sprite);
+	sprite->move(-SPEED, 0);
+
+	if (sprite->getPosition().x <= -672) {
+		sprite->setPosition(672, 800);
+	}
+}
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
@@ -225,6 +253,16 @@ void GameScene::init() {
 	this->add_sprite_ticker(background3);
 	this->background3 = background3;
 
+	GroundTicker* ground1 = new GroundTicker();
+	this->add_sprite_ticker(ground1);
+	this->ground1 = ground1;
+
+	GroundTicker* ground2 = new GroundTicker();
+	sf::Sprite* g2_sprite = dynamic_cast<sf::Sprite*>(ground2->sprite);
+	g2_sprite->setPosition(672, 800);
+	this->add_sprite_ticker(ground2);
+	this->ground2 = ground2;
+
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<> dis(400.0f, 800.0f);
@@ -262,12 +300,13 @@ void GameScene::add_pipe_set(float y) {
 void GameScene::event_handler(sf::Event* event) {
 	sf::Sprite* player_sprite = dynamic_cast<sf::Sprite*>(this->player->sprite);
 	
-	if (player_sprite->getPosition().y < 0) {
+	if (player_sprite->getPosition().y < 0 || player_sprite->getPosition().y > 780) {
+		background1->ticking = false;
+		background2->ticking = false;
+		background3->ticking = false;
+		ground1->ticking = false;
+		ground2->ticking = false;
 		this->player_hit_sound.play();
-		this->player_die_sound.play();
-	}
-
-	if (!player->dead && player_sprite->getPosition().y > 1000) {
 		this->player_die_sound.play();
 	}
 
@@ -289,17 +328,18 @@ void GameScene::event_handler(sf::Event* event) {
 	}
 	
 	for (SpriteTicker* sprite_ticker: this->sprite_tickers) {
+		if (sprite_ticker == nullptr) continue;
 		sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(sprite_ticker->sprite);
 
 		if (!sprite)
 			continue;
 
-		if (sprite_ticker != background1 && sprite_ticker != background2 && sprite_ticker != background3 && sprite->getPosition().x <= -100) {
+		if (sprite_ticker != background1 && sprite_ticker != background2 && sprite_ticker != background3 && sprite_ticker != ground1 && sprite_ticker != ground2 && sprite->getPosition().x <= -100) {
 			sprite_ticker->visible = false;
 			sprite_ticker->ticking = false;
 		}
 
-		if (sprite_ticker != this->player && sprite_ticker != this->background1 && sprite_ticker != this->background2 && sprite_ticker != this->background3 && sprite_ticker->visible && !this->player->dead) {
+		if (sprite_ticker != this->player && sprite_ticker != this->background1 && sprite_ticker != this->background2 && sprite_ticker != this->background3 && sprite_ticker != this->ground1 && sprite_ticker != this->ground2 && sprite_ticker->visible && !this->player->dead) {
 			if (player_sprite->getGlobalBounds().intersects(sprite->getGlobalBounds())) {
 				this->player->dead = true;
 				player_hit_sound.play();

@@ -7,6 +7,7 @@ Scene::Scene() {}
 Scene::~Scene() {}
 
 bool compare_depth(SpriteTicker* a, SpriteTicker* b) {
+	if (a == nullptr || b == nullptr) return true;
 	return a->depth < b->depth;
 }
 
@@ -17,13 +18,16 @@ void Scene::add_sprite_ticker(SpriteTicker* sprite_ticker) {
 void Scene::render(sf::RenderWindow* window) {
 	std::sort(this->sprite_tickers.begin(), this->sprite_tickers.end(), compare_depth);
 	for (SpriteTicker* sprite_ticker : this->sprite_tickers) {
-		if (sprite_ticker == nullptr || sprite_ticker->sprite == nullptr || !sprite_ticker->visible) continue;
+		if (sprite_ticker == nullptr) continue;
+		if (sprite_ticker->sprite == nullptr) continue;
+		if (!sprite_ticker->visible) continue;
 		window->draw(*sprite_ticker->sprite); 
 	}
 }
 
 void Scene::tick() {
 	for (auto& sprite_ticker : sprite_tickers) {
+		if (sprite_ticker == nullptr) continue;
 		if (sprite_ticker->ticking)
 			sprite_ticker->tick();
 	}
@@ -34,7 +38,7 @@ void Scene::init() {}
 void Scene::event_handler(sf::Event* event) {}
 
 void Scene::drop() {
-	for (auto& sprite_ticker : sprite_tickers) {
+	for (SpriteTicker* sprite_ticker : sprite_tickers) {
 		if (sprite_ticker == nullptr) continue;
 		std::cout << "dropping a sprite_ticker of scene" << std::endl;
 		delete sprite_ticker;
