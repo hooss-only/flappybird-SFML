@@ -6,7 +6,8 @@
 #include "game_scene.hpp"
 
 const float SPEED = 2.f;
-const sf::Vector2f SCALE = sf::Vector2f(2.0f, 2.0f); const float JUMP_POWER = 10.0f;
+const sf::Vector2f SCALE = sf::Vector2f(2.0f, 2.0f); 
+const float JUMP_POWER = 10.0f;
 const float PIPE_INTERVAL = 3.f;
 const float PIPE_GAP = 280.0f;
 
