@@ -301,14 +301,14 @@ void GameScene::add_pipe_set(float y) {
 void GameScene::event_handler(sf::Event* event) {
 	sf::Sprite* player_sprite = dynamic_cast<sf::Sprite*>(this->player->sprite);
 	
-	if (player_sprite->getPosition().y < 0 || player_sprite->getPosition().y > 780) {
+	if (!player->dead && (player_sprite->getPosition().y < 0 || player_sprite->getPosition().y > 780)) {
 		background1->ticking = false;
 		background2->ticking = false;
 		background3->ticking = false;
 		ground1->ticking = false;
 		ground2->ticking = false;
 		this->player_hit_sound.play();
-		this->player_die_sound.play();
+		if (player_sprite->getPosition().y < 0) this->player_die_sound.play();
 	}
 
 	if (this->clock.getElapsedTime().asSeconds() >= 1 && count > 0) {
