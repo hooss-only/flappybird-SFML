@@ -4,6 +4,7 @@
 #include "../objects/event.hpp"
 #include "../util/texture.hpp"
 #include "../util/font.hpp"
+#include "../game.hpp"
 
 #include "game_over_scene.hpp"
 
@@ -45,10 +46,31 @@ class ScoreTextTicker : public SpriteTicker {
 		}
 };
 
-ButtonSpriteTicker::ButtonSpriteTicker() {}
+ButtonSpriteTicker::ButtonSpriteTicker() {
+	sf::Sprite* sprite = new sf::Sprite();
+	sf::Texture* texture = new sf::Texture();
+	load_texture(texture, "sprites/retry.png");
+	sprite->setTexture(*texture);
+	
+	sprite->setScale(3.f, 3.f);
+
+	sf::FloatRect sprite_bounds = sprite->getLocalBounds();
+	sprite->setOrigin(sprite_bounds.width / 2.f, sprite_bounds.height / 2.f);
+	sprite->setPosition(sf::Vector2f(300, 800));
+
+	this->sprite = sprite;
+	this->texture_ptr = texture;
+}
 ButtonSpriteTicker::~ButtonSpriteTicker() {}
 
-void ButtonSpriteTicker::tick() {};
+void ButtonSpriteTicker::tick() {
+	sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(this->sprite);
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+		if (sprite->getGlobalBounds().contains(sf::Mouse::getPosition(*Game::window).x, sf::Mouse::getPosition(*Game::window).y)) {
+			std::cout << "hi" << std::endl;
+		}
+	}
+};
 
 GameOverScene::GameOverScene() {}
 
@@ -63,11 +85,12 @@ void GameOverScene::init() {
 
 	ScoreTextTicker* score_ticker = new ScoreTextTicker();
 	sf::Text* s_s = dynamic_cast<sf::Text*>(score_ticker->sprite);
-	
 	if (s_s) 
 		s_s->setPosition(sf::Vector2f(300, 500));
-
 	this->add_sprite_ticker(score_ticker);
+
+	ButtonSpriteTicker* button = new ButtonSpriteTicker();
+	this->add_sprite_ticker(button);
 }
 
 void GameOverScene::event_handler(sf::Event* event) {

@@ -6,13 +6,15 @@
 #include "objects/event.hpp"
 #include "scenes/game_scene.hpp"
 #include "scenes/game_over_scene.hpp"
+#include "game.hpp"
 
 #define WIDTH 600
 #define HEIGHT 1000
 #define TITLE "FlappyBird"
 
 int main() {
-	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT),TITLE); sf::Clock clock;
+	Game::init();
+	sf::Clock clock;
 	const float fixedTimeStep = 1.0f / 60.0f; // 60 FPS
 	
 	load_all_fonts();
@@ -26,15 +28,15 @@ int main() {
 
 	state = "";
 
-	while (window.isOpen()) {
+	while (Game::window->isOpen()) {
 		sf::Event event;
-		while (window.pollEvent(event)) {
+		while (Game::window->pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
 				std::cout << "Exiting game..." << std::endl;
 				std::cout << "Dropping heaps" << std::endl;
 				scene_manager.end_game();
 				std::cout << "Done!" << std::endl;
-				window.close();
+				Game::window->close();
 			}
 		}
 		float deltaTime = clock.restart().asSeconds();
@@ -45,11 +47,11 @@ int main() {
 			state = "game_end";
 		}
 
-		window.clear();
+		Game::window->clear();
 		scene_manager.event_handler(&event);
 		scene_manager.tick();
-		scene_manager.render(&window);
-		window.display();
+		scene_manager.render(Game::window);
+		Game::window->display();
 
 		sf::sleep(sf::seconds(fixedTimeStep - deltaTime));
 	}
@@ -57,6 +59,8 @@ int main() {
 	unload_all_fonts();
 	delete game_scene;
 	delete game_over_scene;
+
+	Game::clean();
 
 	std::cout << "Exited game!" << std::endl;
 	return 0;
