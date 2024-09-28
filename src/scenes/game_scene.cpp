@@ -302,13 +302,7 @@ void GameScene::event_handler(sf::Event* event) {
 	sf::Sprite* player_sprite = dynamic_cast<sf::Sprite*>(this->player->sprite);
 	
 	if (!player->dead && (player_sprite->getPosition().y < 0 || player_sprite->getPosition().y > 780)) {
-		background1->ticking = false;
-		background2->ticking = false;
-		background3->ticking = false;
-		ground1->ticking = false;
-		ground2->ticking = false;
-		this->player_hit_sound.play();
-		if (player_sprite->getPosition().y < 0) this->player_die_sound.play();
+		check_player_touched_floor(*player_sprite);
 	}
 
 	if (this->clock.getElapsedTime().asSeconds() >= 1 && count > 0) {
@@ -328,6 +322,14 @@ void GameScene::event_handler(sf::Event* event) {
 		clock.restart();
 	}
 	
+	check_player_touched_pipe(*player_sprite);
+
+	if (!player->dead) check_get_point(*player_sprite);
+
+	handle_key(*event);
+}
+
+void GameScene::check_player_touched_pipe(sf::Sprite& player_sprite) {
 	for (SpriteTicker* sprite_ticker: this->sprite_tickers) {
 		if (sprite_ticker == nullptr) continue;
 		sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(sprite_ticker->sprite);
@@ -345,7 +347,7 @@ void GameScene::event_handler(sf::Event* event) {
 		}
 
 		if (sprite_ticker != this->player && sprite_ticker != this->background1 && sprite_ticker != this->background2 && sprite_ticker != this->background3 && sprite_ticker != this->ground1 && sprite_ticker != this->ground2 && sprite_ticker->visible && !this->player->dead) {
-			if (player_sprite->getGlobalBounds().intersects(sprite->getGlobalBounds())) {
+			if (player_sprite.getGlobalBounds().intersects(sprite->getGlobalBounds())) {
 				this->player->dead = true;
 				player_hit_sound.play();
 				player_die_sound.play();
@@ -356,36 +358,50 @@ void GameScene::event_handler(sf::Event* event) {
 			}
 		}
 	}
+}
 
-	if (!player->dead) {
-		for (Ray* ray : this->rays) {
-			if (ray == nullptr || !ray->tickable) continue;
-			ray->origin.x -= SPEED;
-			if (ray->origin.x <= -100) ray->tickable = false;
+void GameScene::check_player_touched_floor(sf::Sprite& player_sprite) {
+	background1->ticking = false;
+	background2->ticking = false;
+	background3->ticking = false;
+	ground1->ticking = false;
+	ground2->ticking = false;
+	this->player_hit_sound.play();
+	if (player_sprite.getPosition().y < 0) this->player_die_sound.play();
+}
 
-			if (rayIntersectsSprite(*ray, *player_sprite)) {
-				point_sound.play();
-				score++;
-				sf::Text* s_t = dynamic_cast<sf::Text*>(score_text->sprite);
+void GameScene::check_get_point(sf::Sprite& player_sprite) {
+	for (Ray* ray : this->rays) {
+		if (ray == nullptr || !ray->tickable) continue;
+		ray->origin.x -= SPEED;
+		if (ray->origin.x <= -100) ray->tickable = false;
 
-				s_t->setString(std::to_string(score));
+		if (rayIntersectsSprite(*ray, player_sprite)) {
+			point_sound.play();
+			score++;
+			sf::Text* s_t = dynamic_cast<sf::Text*>(score_text->sprite);
 
-				ray->tickable = false;
-			}
+			s_t->setString(std::to_string(score));
+
+			ray->tickable = false;
 		}
 	}
+}
 
+void GameScene::handle_key(sf::Event& event) {
 	if (this->player->dead && this->clock.getElapsedTime().asSeconds() >= 3.0f) 
 		state = "player_dead";
 
-	if (event->type == sf::Event::KeyPressed) {
-			if (event->key.code == sf::Keyboard::Up && this->player->ticking && !this->player_jumping && !this->player->dead) {
-				this->player->jump();
-				this->player_jumping = true;
-			} }
-	if (event->type == sf::Event::KeyReleased) {
-		if (event->key.code == sf::Keyboard::Up && this->player->ticking && this->player_jumping && !this->player->dead) {
-				this->player_jumping = false;
-			}
+	if (event.type == sf::Event::KeyPressed) {
+		if (event.key.code == sf::Keyboard::Up && this->player->ticking && !this->player_jumping && !this->player->dead) {
+			this->player->jump();
+			this->player_jumping = true;
+		} 
+	}
+
+	if (event.type == sf::Event::KeyReleased) {
+		if (event.key.code == sf::Keyboard::Up && this->player->ticking && this->player_jumping && !this->player->dead) {
+			this->player_jumping = false;
+		}
 	}
 }

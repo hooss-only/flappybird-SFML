@@ -73,6 +73,11 @@ class GameScene : public Scene {
 		void add_ray(float x);
 		void add_pipe_set(float y);
 
+		void handle_key(sf::Event& event);
+		void check_get_point(sf::Sprite& player_sprite);
+		void check_player_touched_floor(sf::Sprite& player_sprite);
+		void check_player_touched_pipe(sf::Sprite& player_sprite);
+
 		unsigned int count;
 	
 		std::vector<Ray*> rays;
