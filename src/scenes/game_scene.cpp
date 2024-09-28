@@ -1,7 +1,7 @@
-#include "../objects/event.hpp"
 #include "../util/texture.hpp"
 #include "../util/audio.hpp"
 #include "../util/font.hpp"
+#include "../game.hpp"
 
 #include "game_scene.hpp"
 
@@ -108,7 +108,7 @@ class PipeTicker : public SpriteTicker {
 LiveScoreTextTicker::LiveScoreTextTicker() {
 	sf::Text* text = new sf::Text();
 	text->setFont(*game_font);
-	text->setString(std::to_string(score));
+	text->setString(std::to_string(Game::score));
 	text->setCharacterSize(26);
 	text->setFillColor(sf::Color::White);
 
@@ -202,11 +202,12 @@ GameScene::~GameScene() {
 		if (ray == nullptr) continue;
 		delete ray;
 		ray = nullptr;
+		this->rays.clear();
 	}
 }
 
 void GameScene::init() {
-	score = 0;
+	Game::score = 0;
 	this->count = 3;
 
 	FlappyBirdTicker* flappy_ticker = new FlappyBirdTicker();
@@ -378,10 +379,10 @@ void GameScene::check_get_point(sf::Sprite& player_sprite) {
 
 		if (rayIntersectsSprite(*ray, player_sprite)) {
 			point_sound.play();
-			score++;
+			Game::score++;
 			sf::Text* s_t = dynamic_cast<sf::Text*>(score_text->sprite);
 
-			s_t->setString(std::to_string(score));
+			s_t->setString(std::to_string(Game::score));
 
 			ray->tickable = false;
 		}
@@ -390,7 +391,7 @@ void GameScene::check_get_point(sf::Sprite& player_sprite) {
 
 void GameScene::handle_key(sf::Event& event) {
 	if (this->player->dead && this->clock.getElapsedTime().asSeconds() >= 3.0f) 
-		state = "player_dead";
+		Game::state = GameState::PLAYER_DEAD;
 
 	if (event.type == sf::Event::KeyPressed) {
 		if (event.key.code == sf::Keyboard::Up && this->player->ticking && !this->player_jumping && !this->player->dead) {

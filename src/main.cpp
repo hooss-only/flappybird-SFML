@@ -3,7 +3,6 @@
 
 #include "util/font.hpp"
 #include "objects/scene.hpp"
-#include "objects/event.hpp"
 #include "scenes/game_scene.hpp"
 #include "scenes/game_over_scene.hpp"
 #include "game.hpp"
@@ -26,7 +25,7 @@ int main() {
 
 	scene_manager.set_scene(game_scene);
 
-	state = "";
+	Game::state = GameState::NONE;
 
 	while (Game::window->isOpen()) {
 		sf::Event event;
@@ -41,12 +40,20 @@ int main() {
 		}
 		float deltaTime = clock.restart().asSeconds();
 
-		if (state == "player_dead") {
-			scene_manager.change_scene(game_over_scene);
-			std::cout << "player_dead" << std::endl;
-			state = "game_end";
+		switch (Game::state) {
+			case (GameState::PLAYER_DEAD):
+				scene_manager.change_scene(game_over_scene);
+				std::cout << "player_dead" << std::endl;
+				Game::state = GameState::GAME_END;
+				break;
+			case (GameState::RESTART):
+				scene_manager.change_scene(game_scene);
+				Game::state = GameState::NONE;
+				break;
+			default:
+				break;
 		}
-
+		
 		Game::window->clear();
 		scene_manager.event_handler(&event);
 		scene_manager.tick();

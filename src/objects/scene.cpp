@@ -45,6 +45,7 @@ void Scene::init() {}
 void Scene::event_handler(sf::Event* event) {}
 
 void Scene::drop() {
+	std::cout << "Dropping all sprite_tickers of scene" << std::endl;
 	for (SpriteTicker* sprite_ticker : sprite_tickers) {
 		if (sprite_ticker == nullptr) continue;
 		std::cout << "dropping a sprite_ticker of scene" << std::endl;
@@ -52,6 +53,8 @@ void Scene::drop() {
 		sprite_ticker = nullptr;
 		std::cout << "dropped a sprite_ticker" << std::endl;
 	}
+	sprite_tickers.clear();
+	std::cout << "Dropped all sprite_tickers of scene" << std::endl;
 }
 
 SceneManager::SceneManager() {}

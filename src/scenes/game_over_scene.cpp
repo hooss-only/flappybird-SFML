@@ -1,7 +1,6 @@
 #include <string>
 #include <iostream>
 
-#include "../objects/event.hpp"
 #include "../util/texture.hpp"
 #include "../util/font.hpp"
 #include "../game.hpp"
@@ -31,7 +30,7 @@ class ScoreTextTicker : public SpriteTicker {
 		ScoreTextTicker() : SpriteTicker() {
 			sf::Text* text = new sf::Text();
 			text->setFont(*game_font);
-			text->setString(std::to_string(score));
+			text->setString(std::to_string(Game::score));
 			text->setCharacterSize(26);
 			text->setFillColor(sf::Color::White);
 
@@ -67,7 +66,7 @@ void ButtonSpriteTicker::tick() {
 	sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(this->sprite);
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 		if (sprite->getGlobalBounds().contains(sf::Mouse::getPosition(*Game::window).x, sf::Mouse::getPosition(*Game::window).y)) {
-			std::cout << "hi" << std::endl;
+			Game::state = GameState::RESTART;
 		}
 	}
 };
@@ -77,7 +76,7 @@ GameOverScene::GameOverScene() {}
 GameOverScene::~GameOverScene() {}
 
 void GameOverScene::init() {
-	std::cout << "Game Over! Score: " << score << std::endl;
+	std::cout << "Game Over! Score: " << Game::score << std::endl;
 	GameOverSpriteTicker* game_over = new GameOverSpriteTicker();
 	sf::Sprite* sprite = dynamic_cast<sf::Sprite*>(game_over->sprite);
 	sprite->setPosition(sf::Vector2f(100, 200));
