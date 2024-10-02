@@ -14,7 +14,8 @@ class FlappyBirdTicker : public SpriteTicker, PhysicalObject {
 		FlappyBirdTicker();
 		~FlappyBirdTicker() override;
 		
-		void jump(); void tick() override;
+		void jump();
+		void tick() override;
 
 		bool dead;
 	
